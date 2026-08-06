@@ -28,6 +28,7 @@ cc_library_shared {
         "-Werror",
         "-Wno-macro-redefined",
         "-Wno-unused-function",
+        "-DENABLE_EXTENDED_COMPRESS_FORMAT",
     ],
     export_include_dirs: ["include"],
     srcs: [
@@ -43,6 +44,11 @@ cc_library_shared {
     ],
     header_libs: [
         "device_kernel_headers",
+        // IchthysOS: SNDRV_COMPRESS_SET_NEXT_TRACK_PARAM is a downstream QCOM ioctl. It exists in
+        // the device kernel's uapi (sound/compress_offload.h) but not in bionic's copy, and cp2a
+        // narrows which headers a vendor: true module sees, so device_kernel_headers alone no
+        // longer resolves it. audio_kernel_headers exports the sound uapi that declares it.
+        "audio_kernel_headers",
     ],
 }
 
